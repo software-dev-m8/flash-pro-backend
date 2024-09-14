@@ -15,13 +15,10 @@ WORKDIR /usr/src/app/
 
 COPY package*.json ./
 
-ARG PORT=4000
-ENV PORT=${PORT}
-
 RUN npm install --only=production
 
 COPY --from=development /usr/src/app/dist ./dist
 
-EXPOSE 4000
+EXPOSE ${PORT}
 
 CMD ["node", "dist/main"]
