@@ -3,13 +3,13 @@ services:
   app:
     container_name: backend
     build:
-      context: ./
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: docker/prod/Dockerfile
     restart: always
     ports:
       - '3000:3000'
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017/nestjsdb
+    env_file:
+      - ../../.env
     depends_on:
       - mongo
 
