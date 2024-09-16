@@ -4,7 +4,9 @@ import { LoginDto } from './dto'
 import { ILogoutResponse } from '@/shared/interfaces'
 import { GetUser } from '@/common/decorators'
 import { AccessTokenGuard, RefreshTokenGuard } from '@/common/guards'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
