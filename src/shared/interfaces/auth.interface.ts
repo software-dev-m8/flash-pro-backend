@@ -1,19 +1,19 @@
 export interface ICreateToken {
-    accessToken: string
-    refreshToken: string
+  accessToken: string
+  refreshToken: string
 }
 
 export interface ILoginResponse {
-    accessToken: string
-    refreshToken: string
-    user: any
+  accessToken: string
+  refreshToken: string
+  user: any
 }
 
 export interface ILogoutResponse {
-    message: string
+  message: string
 }
 
 export interface IRefreshTokenResponse {
-    accessToken: string
-    refreshToken: string
+  accessToken: string
+  refreshToken: string
 }
