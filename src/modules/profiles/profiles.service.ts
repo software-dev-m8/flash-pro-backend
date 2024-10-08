@@ -7,12 +7,34 @@ import { CreateProfileDto, UpdateProfileDto } from './dto'
 @Injectable()
 export class ProfilesService {
   constructor(
-    @InjectModel(Profile.name) private readonly profileModel: Model<Profile>,
+    @InjectModel(Profile.name)
+    private readonly profileModel: Model<Profile>,
+
   ) {}
 
-  async createProfile(createProfileDto: CreateProfileDto): Promise<Profile> {
-    return await this.profileModel.create(createProfileDto)
-  }
+  // async createProfile(createProfileDto: CreateProfileDto): Promise<Profile> {
+  //   let profileData: any = {
+  //     firstName: createProfileDto.firstName,
+  //     lastName: createProfileDto.lastName,
+  //     phoneNumber: createProfileDto.phoneNumber,
+  //     birthDate: createProfileDto.birthDate,
+  //   }
+
+  //   if (createProfileDto.profileType === ProfileType.RESTAURANT) {
+  //     if (!createProfileDto.restaurantName || !createProfileDto.address) {
+  //       throw new HttpException(
+  //         'RESTAURANT_NAME_AND_ADDRESS_ARE_REQUIRED',
+  //         HttpStatus.BAD_REQUEST,
+  //       )
+  //     }
+  //     profileData.restaurantName = createProfileDto.restaurantName
+  //     profileData.address = createProfileDto.address
+  //     // profileData.branches = createProfileDto.branches;
+  //     return await this.restaurantProfileModel.create(profileData)
+  //   }
+
+  //   return await this.customerProfileModel.create(profileData)
+  // }
 
   async findProfileById(id: string): Promise<Profile> {
     const profile = await this.profileModel.findById(id).exec()
@@ -44,4 +66,20 @@ export class ProfilesService {
     }
     return deletedProfile
   }
+
+  // async findCustomerProfiles(): Promise<CustomerProfile[]> {
+  //   const profiles = await this.profileModel
+  //     .find({ profileType: ProfileType.CUSTOMER })
+  //     .lean()
+  //     .exec()
+  //   return profiles as CustomerProfile[]
+  // }
+
+  // async findRestaurantProfiles(): Promise<RestaurantProfile[]> {
+  //   const profiles = await this.profileModel
+  //     .find({ profileType: ProfileType.RESTAURANT })
+  //     .lean()
+  //     .exec()
+  //   return profiles as RestaurantProfile[]
+  // }
 }

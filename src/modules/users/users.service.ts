@@ -4,7 +4,6 @@ import { Model } from 'mongoose'
 import { User } from './schemas/user.schema'
 import { CreateUserDto, UpdateUserDto } from './dto'
 import { ProfilesService } from '../profiles/profiles.service'
-import { Profile } from '../profiles/schemas/profile.schema'
 import { hash } from '@/shared/utils'
 import { UpdateProfileDto } from '../profiles/dto'
 
@@ -15,24 +14,54 @@ export class UsersService {
     private readonly profilesService: ProfilesService,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const defaultProfile: Profile = await this.profilesService.createProfile({
-      firstName: 'John',
-      lastName: 'Doe',
-      phoneNumber: null,
-      birthDate: null,
-    })
+  // !! Fix this
+  // async createUser(createUserDto: CreateUserDto): Promise<User> {
+  //   const {
+  //     email,
+  //     password,
+  //     firstName,
+  //     lastName,
+  //     phoneNumber,
+  //     birthDate,
+  //     profileType,
+  //     restaurantName,
+  //     address,
+  //   } = createUserDto
 
-    const hashedPassword = await hash(createUserDto.password)
+  //   let profileData: IProfile
 
-    const newUser = await this.userModel.create({
-      ...createUserDto,
-      password: hashedPassword,
-      profile: defaultProfile,
-    })
+  //   if (profileType === ProfileType.RESTAURANT) {
+  //     profileData = {
+  //       firstName,
+  //       lastName,
+  //       phoneNumber,
+  //       birthDate,
+  //       profileType,
+  //       restaurantName,
+  //       address,
+  //     }
+  //   } else {
+  //     profileData = {
+  //       firstName,
+  //       lastName,
+  //       phoneNumber,
+  //       birthDate,
+  //       profileType,
+  //     }
+  //   }
 
-    return newUser
-  }
+  //   const profile = await this.profilesService.createProfile(profileData)
+
+  //   const hashedPassword = await hash(password)
+
+  //   const newUser = await this.userModel.create({
+  //     email,
+  //     password: hashedPassword,
+  //     profile,
+  //   })
+
+  //   return newUser
+  // }
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().populate('profile').exec()

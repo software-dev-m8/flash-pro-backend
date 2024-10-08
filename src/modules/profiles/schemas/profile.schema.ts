@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, discriminatorKey: 'type' })
 export class Profile extends Document {
   @Prop({ required: true })
   firstName: string
@@ -10,10 +10,10 @@ export class Profile extends Document {
   lastName: string
 
   @Prop()
-  phoneNumber: string
+  phoneNumber?: string
 
   @Prop({ type: Date })
-  birthDate: Date
+  birthDate?: Date
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile)
