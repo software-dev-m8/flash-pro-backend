@@ -1,14 +1,14 @@
-import { ProfileType } from '@/shared/enums'
 import {
+  IsArray,
   IsDateString,
-  IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
-  ValidateIf,
+  ValidateNested,
 } from 'class-validator'
 
-export class CreateProfileDto {
+export class CreateCustomerProfileDto {
   @IsString()
   readonly firstName: string
 
@@ -22,15 +22,19 @@ export class CreateProfileDto {
   @IsDateString()
   @IsOptional()
   readonly birthDate?: string
+}
 
-  @IsEnum(ProfileType)
-  readonly profileType: ProfileType
-
-  @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
+export class CreateRestaurantProfileDto {
   @IsString()
-  readonly restaurantName?: string
+  @IsNotEmpty()
+  readonly restaurantName: string
 
-  @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
   @IsString()
-  readonly address?: string
+  @IsOptional()
+  readonly address: string
+
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => CreateBranchDto)
+  // readonly branches: Branch[]
 }

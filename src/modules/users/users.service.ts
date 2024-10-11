@@ -5,7 +5,12 @@ import { User } from './schemas/user.schema'
 import { CreateUserDto, UpdateUserDto } from './dto'
 import { ProfilesService } from '../profiles/profiles.service'
 import { hash } from '@/shared/utils'
-import { UpdateProfileDto } from '../profiles/dto'
+import { Role } from '@/shared/enums'
+import { CustomerProfile, RestaurantProfile } from '../profiles/schemas'
+import {
+  UpdateCustomerProfileDto,
+  UpdateRestaurantProfileDto,
+} from '../profiles/dto'
 
 @Injectable()
 export class UsersService {
@@ -14,54 +19,42 @@ export class UsersService {
     private readonly profilesService: ProfilesService,
   ) {}
 
-  // !! Fix this
-  // async createUser(createUserDto: CreateUserDto): Promise<User> {
-  //   const {
-  //     email,
-  //     password,
-  //     firstName,
-  //     lastName,
-  //     phoneNumber,
-  //     birthDate,
-  //     profileType,
-  //     restaurantName,
-  //     address,
-  //   } = createUserDto
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const hashedPassword = await hash(createUserDto.password)
 
-  //   let profileData: IProfile
+    if (!createUserDto.role) {
+      createUserDto.role = Role.CUSTOMER
+    }
 
-  //   if (profileType === ProfileType.RESTAURANT) {
-  //     profileData = {
-  //       firstName,
-  //       lastName,
-  //       phoneNumber,
-  //       birthDate,
-  //       profileType,
-  //       restaurantName,
-  //       address,
-  //     }
-  //   } else {
-  //     profileData = {
-  //       firstName,
-  //       lastName,
-  //       phoneNumber,
-  //       birthDate,
-  //       profileType,
-  //     }
-  //   }
+    let profile: CustomerProfile | RestaurantProfile
+    if (createUserDto.role == Role.CUSTOMER && createUserDto.customerProfile) {
+      profile = await this.profilesService.createCustomerProfile(
+        createUserDto.customerProfile,
+      )
+    } else if (
+      createUserDto.role == Role.RESTAURANT &&
+      createUserDto.restaurantProfile
+    ) {
+      profile = await this.profilesService.createRestaurantProfile(
+        createUserDto.restaurantProfile,
+      )
+    } else {
+      throw new HttpException('INVALID_DATA', HttpStatus.BAD_REQUEST)
+    }
 
-  //   const profile = await this.profilesService.createProfile(profileData)
+    const newUser = await this.userModel.create({
+      email: createUserDto.email,
+      password: hashedPassword,
+      role: createUserDto.role,
+      profile: profile._id,
+      profileModel:
+        createUserDto.role == Role.CUSTOMER
+          ? 'CustomerProfile'
+          : 'RestaurantProfile',
+    })
 
-  //   const hashedPassword = await hash(password)
-
-  //   const newUser = await this.userModel.create({
-  //     email,
-  //     password: hashedPassword,
-  //     profile,
-  //   })
-
-  //   return newUser
-  // }
+    return newUser
+  }
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().populate('profile').exec()
@@ -105,27 +98,50 @@ export class UsersService {
 
   async updateUserProfile(
     id: string,
-    updateProfileDto: UpdateProfileDto,
-  ): Promise<User> {
+    updateProfileDto: UpdateCustomerProfileDto | UpdateRestaurantProfileDto,
+  ) {
     const user = await this.findUserById(id)
 
     if (!user || !user.profile) {
       throw new HttpException('PROFILE_NOT_FOUND', HttpStatus.NOT_FOUND)
     }
 
-    await this.profilesService.updateProfile(
-      user.profile._id.toString(),
-      updateProfileDto,
-    )
+    let updatedProfile: CustomerProfile | RestaurantProfile
+    const profileId = user.profile._id.toString()
 
-    return this.findUserById(id)
+    if (user.profileModel === 'CustomerProfile') {
+      updatedProfile = await this.profilesService.updateCustomerProfile(
+        profileId,
+        updateProfileDto as UpdateCustomerProfileDto,
+      )
+    } else if (user.profileModel === 'RestaurantProfile') {
+      updatedProfile = await this.profilesService.updateRestaurantProfile(
+        profileId,
+        updateProfileDto as UpdateRestaurantProfileDto,
+      )
+    } else {
+      throw new HttpException(
+        'INVALID_PROFILE_TYPE_OR_MISSING_DTO',
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    // return this.findUserById(id)
+    return updatedProfile
   }
 
   async deleteUser(id: string): Promise<User> {
     const user = await this.findUserById(id)
 
     if (user.profile) {
-      await this.profilesService.deleteProfile(user.profile._id.toString())
+      const profileId = user.profile._id.toString()
+      if (user.profileModel === 'CustomerProfile') {
+        await this.profilesService.deleteCustomerProfile(profileId)
+      } else if (user.profileModel === 'RestaurantProfile') {
+        await this.profilesService.deleteRestaurantProfile(profileId)
+      } else {
+        throw new HttpException('INVALID_PROFILE_TYPE', HttpStatus.BAD_REQUEST)
+      }
     }
 
     const deletedUser = await this.userModel.findByIdAndDelete(id).exec()
