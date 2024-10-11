@@ -5,6 +5,7 @@ import { DatabaseModule } from './modules/database/database.module'
 import { ProfilesModule } from './modules/profiles/profiles.module'
 import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { CouponsModule } from './modules/coupons/coupons.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './modules/auth/auth.module'
     ProfilesModule,
     UsersModule,
     AuthModule,
+    CouponsModule,
   ],
 })
 export class AppModule {}
