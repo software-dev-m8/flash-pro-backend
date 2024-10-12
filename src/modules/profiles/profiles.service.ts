@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { CustomerProfile, RestaurantProfile } from './schemas'
 import {
   CreateCustomerProfileDto,
@@ -8,6 +8,7 @@ import {
   UpdateCustomerProfileDto,
   UpdateRestaurantProfileDto,
 } from './dto'
+import { Branch } from '../branches/schema'
 
 @Injectable()
 export class ProfilesService {
@@ -16,6 +17,8 @@ export class ProfilesService {
     private readonly customerProfileModel: Model<CustomerProfile>,
     @InjectModel(RestaurantProfile.name)
     private readonly restaurantProfileModel: Model<RestaurantProfile>,
+    @InjectModel(Branch.name)
+    private readonly branchModel: Model<Branch>,
   ) {}
 
   async findCustomerProfileById(id: string): Promise<CustomerProfile> {
@@ -59,7 +62,10 @@ export class ProfilesService {
   }
 
   async findRestaurantProfileById(id: string): Promise<RestaurantProfile> {
-    const profile = await this.restaurantProfileModel.findById(id).exec()
+    const profile = await this.restaurantProfileModel
+      .findById(id)
+      .populate('branch')
+      .exec()
 
     if (!profile) {
       throw new HttpException('PROFILE_NOT_FOUND', HttpStatus.NOT_FOUND)
@@ -73,13 +79,47 @@ export class ProfilesService {
     return await this.restaurantProfileModel.create(createRestaurantProfileDto)
   }
 
+  // ! fix this
   async updateRestaurantProfile(
     id: string,
     updateRestaurantProfileDto: UpdateRestaurantProfileDto,
   ): Promise<RestaurantProfile> {
+    const existingProfile = await this.restaurantProfileModel.findById(id)
+
+    if (!existingProfile) {
+      throw new HttpException('PROFILE_NOT_FOUND', HttpStatus.NOT_FOUND)
+    }
+
+    const newBranchIds = updateRestaurantProfileDto.branches
+      ? await this.branchModel
+          .find({ _id: { $in: updateRestaurantProfileDto.branches } })
+          .distinct('_id')
+      : []
+
+    console.log(newBranchIds)
+
+    const existingBranches = existingProfile.branches || []
+    const allBranches = [
+      ...new Set([
+        ...existingBranches.map((id) => id.toString()),
+        ...newBranchIds.map((id) => id.toString()),
+      ]),
+    ]
+
+    console.log(allBranches)
+
     const updatedRestaurantProfile = await this.restaurantProfileModel
-      .findByIdAndUpdate(id, updateRestaurantProfileDto, { new: true })
+      .findByIdAndUpdate(
+        id,
+        {
+          ...updateRestaurantProfileDto,
+          branches: allBranches.map((id) => new Types.ObjectId(id)),
+        },
+        { new: true },
+      )
       .exec()
+
+    console.log(updatedRestaurantProfile)
 
     if (!updatedRestaurantProfile) {
       throw new HttpException('PROFILE_NOT_FOUND', HttpStatus.NOT_FOUND)

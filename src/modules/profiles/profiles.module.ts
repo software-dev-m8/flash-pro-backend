@@ -7,6 +7,7 @@ import {
   RestaurantProfile,
   RestaurantProfileSchema,
 } from './schemas'
+import { Branch, BranchSchema } from '../branches/schema'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import {
         name: RestaurantProfile.name,
         schema: RestaurantProfileSchema,
       },
+      { name: Branch.name, schema: BranchSchema },
     ]),
   ],
   providers: [ProfilesService],

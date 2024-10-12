@@ -32,9 +32,4 @@ export class CreateRestaurantProfileDto {
   @IsString()
   @IsOptional()
   readonly address: string
-
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => CreateBranchDto)
-  // readonly branches: Branch[]
 }

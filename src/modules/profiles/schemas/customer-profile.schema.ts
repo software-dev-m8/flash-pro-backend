@@ -17,6 +17,9 @@ export class CustomerProfile extends Document {
 
   @Prop()
   image?: string
+
+  @Prop()
+  likeFoods: string[]
 }
 
 export const CustomerProfileSchema =
