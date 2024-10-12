@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 import { Model } from 'mongoose'
-import { Coupon } from './entities/coupon.entity';
+import { Coupon } from './schemas/coupon.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateProfileDto } from '../profiles/dto';
 
@@ -14,8 +14,7 @@ export class CouponsService {
   ){}
 
   async create(createCouponDto: CreateCouponDto): Promise<Coupon> {
-    const newCoupon = await this.couponModel.create(createCouponDto)
-    return newCoupon;
+    return await this.couponModel.create(createCouponDto);
   }
 
   async findAll(): Promise<Coupon[]> {
@@ -33,7 +32,7 @@ export class CouponsService {
   
   async findByText(text: string): Promise<Coupon[]> {
     const regex = new RegExp(text, 'i');
-    const couponList = await this.couponModel.find({ couponName : { $regex: regex } }).exec()
+    const couponList = await this.couponModel.find({ foodName : { $regex: regex } }).exec()
     if (!couponList) {
       throw new HttpException('COUPONLIST_NOT_FOUND', HttpStatus.NOT_FOUND)
     }
@@ -43,7 +42,7 @@ export class CouponsService {
 
   async findByBranch(text: string): Promise<Coupon[]> {
     const regex = new RegExp(text, 'i');
-    const couponList = await this.couponModel.find({ branch : { $regex: regex } }).exec()
+    const couponList = await this.couponModel.find({ restaurantBranch : { $regex: regex } }).exec()
     if (!couponList) {
       throw new HttpException('COUPONLIST_NOT_FOUND', HttpStatus.NOT_FOUND)
     }

@@ -3,6 +3,7 @@ import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 import { ApiTags, ApiBody } from '@nestjs/swagger'
+import { CouponType } from './dto/coupon-type-enum';
 
 @ApiTags('Coupons')
 @Controller('coupons')
@@ -15,9 +16,13 @@ export class CouponsController {
     schema: {
       type: 'object',
       properties: {
-        couponName: { type: 'string', example: 'friedchickenKFC50off'},
-        branch: {type: 'string', example: 'Minburi, Bangkok'},
+        couponType: { type: 'CouponType', example: 'somefood'},
+        foodName: {type: 'string', example: 'fried chicken'},
+        restaurantBranch: {type: 'string', example: 'dont know'},
+        branchOnly: {type: 'boolean', example: true },
         amount: { type: 'number', example: 300 },
+        startDate: { type: 'string',example: '2024-10-12'},
+        endDate : { type: 'string',example: '2024-10-20'},
         couponImage: {type: 'string', example: 'Link'},
       },
     },
@@ -41,7 +46,7 @@ export class CouponsController {
     return this.couponsService.findByText(text);
   }
 
-  @Get('search/branch/:text')
+  @Get('search/restaurantbranch/:text')
   findByBranch(@Param('text') text: string) {
     return this.couponsService.findByBranch(text);
   }
