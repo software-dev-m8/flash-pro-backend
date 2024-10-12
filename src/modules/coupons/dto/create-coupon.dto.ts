@@ -7,7 +7,7 @@ import {
     IsDateString,
     IsBoolean
   } from 'class-validator'
-import { CouponType } from './coupon-type-enum'
+import { CouponType } from '@/shared/enums'
 export class CreateCouponDto {
     @IsEnum(CouponType)
     public couponType: CouponType

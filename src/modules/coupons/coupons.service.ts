@@ -1,10 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateCouponDto } from './dto/create-coupon.dto';
-import { UpdateCouponDto } from './dto/update-coupon.dto';
+import { CreateCouponDto, UpdateCouponDto } from './dto';
 import { Model } from 'mongoose'
 import { Coupon } from './schemas/coupon.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { UpdateProfileDto } from '../profiles/dto';
 
 @Injectable()
 export class CouponsService {

@@ -1,4 +1,3 @@
-import { ProfileType } from '@/shared/enums'
 import {
   IsDateString,
   IsEnum,
@@ -23,14 +22,14 @@ export class CreateProfileDto {
   @IsOptional()
   readonly birthDate?: string
 
-  @IsEnum(ProfileType)
-  readonly profileType: ProfileType
+  // @IsEnum(ProfileType)
+  // readonly profileType: ProfileType
 
-  @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  @IsString()
-  readonly restaurantName?: string
+  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
+  // @IsString()
+  // readonly restaurantName?: string
 
-  @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  @IsString()
-  readonly address?: string
+  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
+  // @IsString()
+  // readonly address?: string
 }

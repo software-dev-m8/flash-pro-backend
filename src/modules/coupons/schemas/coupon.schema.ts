@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import mongoose, { Document } from 'mongoose'
-import { CouponType } from '../dto/coupon-type-enum'
+import { CouponType } from '@/shared/enums'
 
 
 @Schema({ timestamps: true })

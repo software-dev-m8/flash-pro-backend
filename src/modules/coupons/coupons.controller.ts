@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CouponsService } from './coupons.service';
-import { CreateCouponDto } from './dto/create-coupon.dto';
-import { UpdateCouponDto } from './dto/update-coupon.dto';
+import { CreateCouponDto, UpdateCouponDto } from './dto';
 import { ApiTags, ApiBody } from '@nestjs/swagger'
-import { CouponType } from './dto/coupon-type-enum';
+
 
 @ApiTags('Coupons')
 @Controller('coupons')
