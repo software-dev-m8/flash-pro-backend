@@ -126,7 +126,6 @@ export class UsersService {
       )
     }
 
-    // return this.findUserById(id)
     return updatedProfile
   }
 

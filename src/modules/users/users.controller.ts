@@ -12,10 +12,6 @@ import {
 import { UsersService } from './users.service'
 import { CreateUserDto, UpdateUserDto } from './dto'
 import { ApiTags } from '@nestjs/swagger'
-import {
-  UpdateCustomerProfileDto,
-  UpdateRestaurantProfileDto,
-} from '../profiles/dto'
 
 @ApiTags('Users')
 @Controller('users')
@@ -50,15 +46,9 @@ export class UsersController {
     const user = await this.usersService.findUserById(id)
 
     if (user.profileModel === 'CustomerProfile') {
-      return this.usersService.updateUserProfile(
-        id,
-        updateProfileDto,
-      )
+      return this.usersService.updateUserProfile(id, updateProfileDto)
     } else if (user.profileModel === 'RestaurantProfile') {
-      return this.usersService.updateUserProfile(
-        id,
-        updateProfileDto,
-      )
+      return this.usersService.updateUserProfile(id, updateProfileDto)
     } else {
       throw new HttpException('INVALID_PROFILE_TYPE', HttpStatus.BAD_REQUEST)
     }
