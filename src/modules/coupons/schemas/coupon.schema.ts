@@ -14,6 +14,12 @@ export class Coupon extends Document{
     @Prop({ required: true })
     restaurantBranch: string
 
+    @Prop({ required : false})
+    discountPercent: number
+
+    @Prop({required : false})
+    discountBaht: number
+
     @Prop({ required : true})
     branchOnly: boolean // is the coupon can use only for this branch?
 
@@ -28,6 +34,9 @@ export class Coupon extends Document{
 
     @Prop()
     couponImage : string
+
+    @Prop()
+    couponDetails : string
 }
 
 export const CouponSchema = SchemaFactory.createForClass(Coupon);

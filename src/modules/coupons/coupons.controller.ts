@@ -18,6 +18,8 @@ export class CouponsController {
         couponType: { type: 'CouponType', example: 'somefood'},
         foodName: {type: 'string', example: 'fried chicken'},
         restaurantBranch: {type: 'string', example: 'dont know'},
+        discountPercent: {type: 'number', example: 50},
+        discountBaht: {type: 'number', example: null},
         branchOnly: {type: 'boolean', example: true },
         amount: { type: 'number', example: 300 },
         startDate: { type: 'string',example: '2024-10-12'},

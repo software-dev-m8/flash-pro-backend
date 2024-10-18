@@ -5,7 +5,8 @@ import {
     IsEnum,
     ValidateIf,
     IsDateString,
-    IsBoolean
+    IsBoolean,
+    IsInt
   } from 'class-validator'
 import { CouponType } from '@/shared/enums'
 export class CreateCouponDto {
@@ -18,6 +19,16 @@ export class CreateCouponDto {
 
     @IsString()
     public restaurantBranch: string //format: dont know
+
+    @IsOptional()
+    @IsInt()
+    @ValidateIf((o) => o.discountPercet > 0 && o.discountPercent <= 100)
+    public discountPercent: number
+
+    @IsOptional()
+    @IsInt()
+    @ValidateIf((o) => o.discountBaht >= 0)
+    public discountBaht: number
 
     @IsBoolean()
     public branchOnly: boolean // is the coupon can use only for this branch?
