@@ -14,11 +14,11 @@ services:
     container_name: dev_minio
     restart: always
     ports:
-      - '9000:9000'
+      - ${MINIO_PORT}:9000
       - '9001:9001'
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: miniopassword
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data_dev:/data 

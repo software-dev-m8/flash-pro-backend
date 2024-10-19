@@ -1,16 +1,18 @@
+import {
+  CreateCustomerProfileDto,
+  CreateRestaurantProfileDto,
+} from '@/modules/profiles/dto'
 import { Role } from '@/shared/enums'
+import { Type } from 'class-transformer'
 
 import {
-  IsArray,
-  IsDateString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   MinLength,
-  ValidateIf,
+  ValidateNested,
 } from 'class-validator'
 
 export class CreateUserDto {
@@ -27,33 +29,13 @@ export class CreateUserDto {
   @IsOptional()
   public role?: Role
 
-  // @IsString()
-  // public firstName: string
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateCustomerProfileDto)
+  customerProfile?: CreateCustomerProfileDto
 
-  // @IsString()
-  // public lastName: string
-
-  // @IsPhoneNumber('TH')
-  // public phoneNumber: string
-
-  // @IsDateString()
-  // @IsOptional()
-  // readonly birthDate?: string
-
-  // @IsEnum(ProfileType)
-  // readonly profileType: ProfileType
-
-  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  // @IsString()
-  // readonly restaurantName?: string
-
-  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  // @IsString()
-  // readonly address?: string
-
-  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  // @IsArray()
-  // @IsString({ each: true })
-  // @IsOptional()
-  // readonly branches?: string[]
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateRestaurantProfileDto)
+  restaurantProfile?: CreateRestaurantProfileDto
 }
