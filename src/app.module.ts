@@ -7,6 +7,7 @@ import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CouponsModule } from './modules/coupons/coupons.module';
 import { BranchesModule } from './modules/branches/branches.module';
+import { UserCouponsModule } from './modules/userCoupons/userCoupons.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { BranchesModule } from './modules/branches/branches.module';
     AuthModule,
     CouponsModule,
     BranchesModule,
+    UserCouponsModule,
   ],
 })
 export class AppModule {}
