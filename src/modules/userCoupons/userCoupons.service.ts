@@ -15,11 +15,25 @@ export class UserCouponsService {
   ){}
 
   async createUserCoupon(createUserCouponDto: CreateUserCouponDto): Promise<UserCoupon>{
-    const newUserCoupon = await this.userCouponModel.create({
-        couponId : createUserCouponDto.couponId,
-        userId : createUserCouponDto.userId,
-    })
-    return newUserCoupon
+    const userCouponList = await this.userCouponModel.find({ userId : createUserCouponDto.userId }).exec()
+    let isCollect = false
+    for (const coupon of userCouponList) {
+        if(coupon.couponId.toString() === createUserCouponDto.couponId) {
+            isCollect = true
+            break
+        }
+      }
+
+    if (!isCollect){
+        const newUserCoupon = await this.userCouponModel.create({
+            couponId : createUserCouponDto.couponId,
+            userId : createUserCouponDto.userId,
+        })
+        return newUserCoupon
+    }
+    else {
+        throw new HttpException('Coupon_is_Aready_Corrected', HttpStatus.BAD_REQUEST)
+    }
   }
 
   async findByUserCouponId(id: string): Promise<UserCoupon> {
