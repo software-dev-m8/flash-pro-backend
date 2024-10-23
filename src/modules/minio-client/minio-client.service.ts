@@ -53,13 +53,13 @@ export class MinioClientService {
     }
   }
 
-  
+ 
   async uploadFile(file: BufferedFile) {
     try {
       const fileName = crypto.randomBytes(16).toString('hex') + file.originalname;
       await this.minioClient.putObject(this.bucketName, fileName, file.buffer);
       this.logger.log(`File ${fileName} uploaded successfully.`);
-      return { url };
+      return {fileName};
     } catch (error) {
       this.logger.error(`File upload error: ${error.message}`);
       throw new HttpException(
@@ -79,6 +79,15 @@ export class MinioClientService {
         'File deletion failed',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+  async getObject(bucketName: string, fileName: string) {
+    try {
+      const fileStream = await this.minioClient.getObject(bucketName, fileName);
+      return fileStream; 
+    } catch (error) {
+      console.error('Error retrieving object from MinIO:', error);
+      throw new Error('Could not retrieve file from MinIO');
     }
   }
 }

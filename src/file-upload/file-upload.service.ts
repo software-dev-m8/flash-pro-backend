@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,BadRequestException } from '@nestjs/common';
 import { MinioClientService } from '@/modules/minio-client/minio-client.service';
 import { BufferedFile } from '@/modules/minio-client/file.model';
 
@@ -10,7 +10,7 @@ export class FileUploadService {
     const uploaded_image = await this.minioClientService.uploadFile(image);
 
     return {
-      image_url: uploaded_image.url,
+      image_name: uploaded_image.fileName,
       message: 'Successfully uploaded',
     };
   }
@@ -24,9 +24,18 @@ export class FileUploadService {
     const uploaded_image2 = await this.minioClientService.uploadFile(image2);
 
     return {
-      image1_url: uploaded_image1.url,
-      image2_url: uploaded_image2.url,
+      image1_name: uploaded_image1.fileName,
+      image2_name: uploaded_image2.fileName,
       message: 'Successfully uploaded mutiple image on MinioS3',
     };
+  }
+  async getFile(fileName: string) {
+    try {
+      const fileStream = await this.minioClientService.getObject('photos', fileName);
+      return fileStream; 
+    } catch (error) {
+      console.error('Error retrieving file:', error);
+      throw new BadRequestException('Error retrieving file');
+    }
   }
 }

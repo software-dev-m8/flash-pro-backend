@@ -13,6 +13,6 @@ export default Joi.object({
   MINIO_PORT: Joi.number().required(),
   MINIO_ACCESSKEY: Joi.string().required(),
   MINIO_SECRETKEY: Joi.string().required(),
-  MINIO_BUCKET_NAME: Joi.string().required().default('photos')
+  MINIO_BUCKET_NAME: Joi.string().required(),
 
 })
