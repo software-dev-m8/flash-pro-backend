@@ -1,7 +1,6 @@
-import { Profile } from '@/modules/profiles/schemas/profile.schema'
 import { Role } from '@/shared/enums'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import mongoose, { Document } from 'mongoose'
+import { Document, Types } from 'mongoose'
 
 @Schema({ timestamps: true })
 export class User extends Document {
@@ -17,8 +16,11 @@ export class User extends Document {
   @Prop({})
   refreshToken: string
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Profile' })
-  profile: Profile
+  @Prop({ type: Types.ObjectId, refPath: 'profileModel' })
+  profile: Types.ObjectId
+
+  @Prop({ required: true, enum: ['CustomerProfile', 'RestaurantProfile'] })
+  profileModel: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

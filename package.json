@@ -11,6 +11,7 @@
     "start": "nest start",
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
+    "dev:docker": "docker compose --env-file .env -f docker/dev/docker-compose.yml up -d --wait",
     "prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

@@ -1,11 +1,19 @@
 import { PartialType } from '@nestjs/swagger'
-import { CreateProfileDto } from './create-profile.dto'
-import { IsOptional, IsString, ValidateIf } from 'class-validator'
+import {
+  CreateCustomerProfileDto,
+  CreateRestaurantProfileDto,
+} from './create-profile.dto'
+import { IsArray, IsMongoId, IsOptional } from 'class-validator'
 
+export class UpdateCustomerProfileDto extends PartialType(
+  CreateCustomerProfileDto,
+) {}
 
-export class UpdateProfileDto extends PartialType(CreateProfileDto) {
-  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  @IsString({ each: true })
+export class UpdateRestaurantProfileDto extends PartialType(
+  CreateRestaurantProfileDto,
+) {
   @IsOptional()
-  readonly branches?: string[]
+  @IsArray()
+  @IsMongoId({ each: true })
+  branches?: string[]
 }

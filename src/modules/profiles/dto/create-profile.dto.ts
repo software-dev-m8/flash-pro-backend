@@ -1,13 +1,14 @@
 import {
+  IsArray,
   IsDateString,
-  IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
-  ValidateIf,
+  ValidateNested,
 } from 'class-validator'
 
-export class CreateProfileDto {
+export class CreateCustomerProfileDto {
   @IsString()
   readonly firstName: string
 
@@ -21,15 +22,14 @@ export class CreateProfileDto {
   @IsDateString()
   @IsOptional()
   readonly birthDate?: string
+}
 
-  // @IsEnum(ProfileType)
-  // readonly profileType: ProfileType
+export class CreateRestaurantProfileDto {
+  @IsString()
+  @IsNotEmpty()
+  readonly restaurantName: string
 
-  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  // @IsString()
-  // readonly restaurantName?: string
-
-  // @ValidateIf((o) => o.profileType === ProfileType.RESTAURANT)
-  // @IsString()
-  readonly address?: string
+  @IsString()
+  @IsOptional()
+  readonly address: string
 }
