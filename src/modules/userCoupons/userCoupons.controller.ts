@@ -8,7 +8,7 @@ import { ApiTags, ApiBody } from '@nestjs/swagger'
 export class UserCouponsController {
     constructor(private readonly userCouponsService: UserCouponsService) {}
 
-    @Post()
+    @Post('collectCoupon')
     createUseCoupons(@Body() createUserCouponDto: CreateUserCouponDto) {
         return this.userCouponsService.createUserCoupon(createUserCouponDto)
     }
@@ -23,8 +23,18 @@ export class UserCouponsController {
         return this.userCouponsService.getRemainingTime(id);
     }
 
+    @Get('/byUser/:id')
+    findByUserId(@Param('id') id: string) {
+        return this.userCouponsService.findByUserId(id);
+    }
+
     @Delete(':id')
     remove(@Param('id') id: string){
         return this.userCouponsService.remove(id)
+    }
+
+    @Post('useCoupon/:id')
+    useCoupon(@Param('id') id: string){
+        return this.userCouponsService.useCoupon(id)
     }
 }

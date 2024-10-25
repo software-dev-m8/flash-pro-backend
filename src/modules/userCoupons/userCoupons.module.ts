@@ -4,6 +4,7 @@ import { UserCouponsController } from './userCoupons.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { UserCoupon, UserCouponSchema } from './schemas/userCoupon.schema'
 import { ProfilesModule } from '../profiles/profiles.module'
+import { CronJob } from 'cron';
 
 @Module({
   imports: [

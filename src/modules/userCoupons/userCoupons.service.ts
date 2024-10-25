@@ -4,8 +4,7 @@ import { Model } from 'mongoose'
 import { UserCoupon } from './schemas/userCoupon.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { CouponsService } from '../coupons/coupons.service';
-// import { UsersService } from '../users/users.service';
+import * as QRCode from 'qrcode';
 
 @Injectable()
 export class UserCouponsService {
@@ -32,7 +31,7 @@ export class UserCouponsService {
         return newUserCoupon
     }
     else {
-        throw new HttpException('Coupon_is_Aready_Corrected', HttpStatus.BAD_REQUEST)
+        throw new HttpException('Coupon_is_Already_Collected', HttpStatus.BAD_REQUEST)
     }
   }
 
@@ -42,6 +41,11 @@ export class UserCouponsService {
     if (!userCoupon) {
       throw new HttpException('Coupon_NOT_FOUND', HttpStatus.NOT_FOUND)
     }
+    return userCoupon;
+  }
+
+  async findByUserId(id: string): Promise<UserCoupon[]> {
+    const userCoupon = await this.userCouponModel.find({ userId : id }).exec()
     return userCoupon;
   }
 
@@ -58,29 +62,69 @@ export class UserCouponsService {
     const userCoupon = await this.userCouponModel.findById(id).exec()
 
     if (!userCoupon) {
+        throw new HttpException('Coupon_NOT_FOUND', HttpStatus.NOT_FOUND)
+    }
+
+    if (!userCoupon.isUsed) {
+        const now = new Date();
+        const expirationTime = new Date(userCoupon.collectAt.getTime() + 2  * 60 * 1000); // 2 hours
+
+        const remainingTime = expirationTime.getTime() - now.getTime();
+        return Math.max(0, Math.floor(remainingTime / 1000));
+    }
+
+    else {
+        const now = new Date();
+        const remainingTime = userCoupon.expiresAt.getTime() - now.getTime();
+        return Math.max(0, Math.floor(remainingTime / 1000));
+    }
+    
+  }
+
+  async useCoupon(id: string): Promise<string> {
+    const userCoupon = await this.userCouponModel.findById(id).exec()
+
+    if (!userCoupon) {
       throw new HttpException('Coupon_NOT_FOUND', HttpStatus.NOT_FOUND)
     }
 
-    const now = new Date();
-    const expirationTime = new Date(userCoupon.collectAt.getTime() + 2 * 60 * 60 * 1000); // 2 hours
+    if (userCoupon.expiresAt && userCoupon.expiresAt < new Date()) {
+        throw new HttpException('Coupon_has_expired', HttpStatus.BAD_REQUEST)
+    }
 
-    const remainingTime = expirationTime.getTime() - now.getTime();
+    if(!userCoupon.isUsed) {
+        const usedAt = new Date();
+        const expiresAt = new Date(usedAt.getTime() + 5 * 60 * 1000);
+        await this.userCouponModel.findByIdAndUpdate(id,{
+            isUsed: true,
+            usedAt,
+            expiresAt,})
 
-    return Math.max(0, Math.floor(remainingTime / 1000));
+        try {
+            // Generate QR code as a Data URL (base64 image)
+            const qrCode = await QRCode.toDataURL(this.generateCouponCode());
+            return qrCode;
+        } catch (error) {
+            throw new HttpException('CANNOT_GENERATE_QR_CODE', HttpStatus.BAD_REQUEST)
+        }
+    }
+    throw new HttpException('Coupon_Already_Used', HttpStatus.BAD_REQUEST)
+  }
+
+  private generateCouponCode(): string {
+    return Math.random().toString(36).substring(2, 12).toUpperCase();
   }
 
   @Cron(CronExpression.EVERY_MINUTE)
   async removeExpiredCoupons() {
-    const now = new Date();
-    const expiredCoupons = await this.userCouponModel.find({
-      collectAt: { $lt: new Date(now.getTime() - 2 * 60 * 60 * 1000) }, // 2 hours ago
-      isUsed: false,
-    });
-
-    for (const coupon of expiredCoupons) {
-      await this.remove(coupon._id.toString());
+    const coupons = await this.userCouponModel.find({ isUsed: false })
+    
+    for (const coupon of coupons) {
+        const now = new Date();
+        const expirationTime = new Date(coupon.collectAt.getTime() + 2  * 60 * 1000);
+        if (expirationTime < now){
+            await this.remove(coupon._id.toString());
+        }
     }
-
-    console.log('Expired coupons remove');
   }
 }

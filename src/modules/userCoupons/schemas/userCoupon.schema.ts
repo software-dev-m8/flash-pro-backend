@@ -15,6 +15,12 @@ export class UserCoupon extends Document {
   @Prop({ default: Date.now })
   collectAt: Date;
 
+  @Prop({nullable: true })
+  usedAt: Date;
+
+  @Prop({ nullable: true })
+  expiresAt: Date;
+
 }
 
 export const UserCouponSchema = SchemaFactory.createForClass(UserCoupon)
