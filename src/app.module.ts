@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import { CouponsModule } from './modules/coupons/coupons.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { UserCouponsModule } from './modules/userCoupons/userCoupons.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserCouponsModule } from './modules/userCoupons/userCoupons.module';
       // mongo config
       // load: [mongo]
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     ProfilesModule,
     UsersModule,

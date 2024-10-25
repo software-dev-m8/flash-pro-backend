@@ -4,12 +4,12 @@ import { UserCouponsController } from './userCoupons.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { UserCoupon, UserCouponSchema } from './schemas/userCoupon.schema'
 import { ProfilesModule } from '../profiles/profiles.module'
-import { CronJob } from 'cron';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: UserCoupon.name, schema: UserCouponSchema }]),
-    ProfilesModule,
+    ScheduleModule.forRoot(),
   ],
   providers: [UserCouponsService],
   controllers: [UserCouponsController],

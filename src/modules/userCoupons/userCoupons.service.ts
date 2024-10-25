@@ -45,6 +45,7 @@ export class UserCouponsService {
   }
 
   async findByUserId(id: string): Promise<UserCoupon[]> {
+    console.log('Running removeExpiredCoupons...');
     const userCoupon = await this.userCouponModel.find({ userId : id }).exec()
     return userCoupon;
   }
