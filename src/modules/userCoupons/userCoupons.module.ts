@@ -3,12 +3,12 @@ import { UserCouponsService } from './userCoupons.service'
 import { UserCouponsController } from './userCoupons.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { UserCoupon, UserCouponSchema } from './schemas/userCoupon.schema'
-import { ProfilesModule } from '../profiles/profiles.module'
+import { Coupon , CouponSchema} from '../coupons/schemas/coupon.schema';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: UserCoupon.name, schema: UserCouponSchema }]),
+    MongooseModule.forFeature([{ name: UserCoupon.name, schema: UserCouponSchema },{ name: Coupon.name, schema: CouponSchema },]),
     ScheduleModule.forRoot(),
   ],
   providers: [UserCouponsService],
