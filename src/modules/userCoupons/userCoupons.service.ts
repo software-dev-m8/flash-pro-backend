@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateUserCouponDto } from './dto';
 import { Model } from 'mongoose'
 import { UserCoupon } from './schemas/userCoupon.schema';
@@ -13,21 +13,24 @@ export class UserCouponsService {
     @InjectModel(UserCoupon.name)
     private readonly userCouponModel: Model<UserCoupon>,
     @InjectModel(Coupon.name)
-    private readonly CouponModel: Model<Coupon>
+    private readonly CouponModel: Model<Coupon>,
+    
   ){}
+  private readonly logger = new Logger(UserCouponsService.name)
 
   async createUserCoupon(createUserCouponDto: CreateUserCouponDto): Promise<UserCoupon>{
     const coupon = await this.CouponModel.findById(createUserCouponDto.couponId).exec()
     if(coupon.amount && coupon.amount <= 0)
         throw new HttpException('Out_Of_Stock', HttpStatus.BAD_REQUEST)
 
-    const date = new Date(coupon.endDate+"T23:59:59.999Z");
+    const date = new Date(coupon.endDate+"T16:59:59.999Z");
     const dateInBangkok = new Date();
     const bangkokOffset = 7 * 60;
     const localOffset = dateInBangkok.getTimezoneOffset();
     const bangkokTime = new Date(dateInBangkok.getTime() + (bangkokOffset + localOffset) * 60000);
-    if(bangkokTime > date) 
-        throw new HttpException('Out_Of_Date', HttpStatus.BAD_REQUEST)
+    this.logger.log(date)
+    // if(bangkokTime > date) 
+    //     throw new HttpException('Out_Of_Date', HttpStatus.BAD_REQUEST)
 
     const userCouponList = await this.userCouponModel.find({ userId : createUserCouponDto.userId }).exec()
     let isCollect = false
@@ -112,8 +115,9 @@ export class UserCouponsService {
         throw new HttpException('Coupon_has_expired', HttpStatus.BAD_REQUEST)
     }
 
-    const coupon = await this.CouponModel.findById(userCoupon.id).exec()
-    const date = new Date(coupon.endDate + "T23:59:59.999Z");
+    const coupon = await this.CouponModel.findById(userCoupon.couponId).exec()
+    this.logger.log(coupon)
+    const date = new Date(coupon.endDate + "T16:59:59.999Z");
     const dateInBangkok = new Date();
     const bangkokOffset = 7 * 60;
     const localOffset = dateInBangkok.getTimezoneOffset();
@@ -150,7 +154,7 @@ export class UserCouponsService {
     
     for (const coupon of coupons) {
         const now = new Date();
-        const expirationTime = new Date(coupon.collectAt.getTime() + 2  * 60 * 1000);
+        const expirationTime = new Date(coupon.collectAt.getTime() + 2 * 60 * 60 * 1000);
         if (expirationTime < now){
             await this.remove(coupon._id.toString());
         }

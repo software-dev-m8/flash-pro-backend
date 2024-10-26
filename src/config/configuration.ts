@@ -9,4 +9,10 @@ export default Joi.object({
   JWT_REFRESH_SECRET_KEY: Joi.string().required(),
   JWT_REFRESH_EXPIRES_IN: Joi.string().required().default('7d'),
   ALLOWED_ORIGINS: Joi.string().default('*'),
+  MINIO_ENDPOINT: Joi.string().required().default('localhost'),
+  MINIO_PORT: Joi.number().required(),
+  MINIO_ACCESSKEY: Joi.string().required(),
+  MINIO_SECRETKEY: Joi.string().required(),
+  MINIO_BUCKET_NAME: Joi.string().required().default('photos')
+
 })
