@@ -9,6 +9,8 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { MinioClientModule } from '@/modules/minio-client/minio-client.module';
 import { CouponsModule } from './modules/coupons/coupons.module';
 import { BranchesModule } from './modules/branches/branches.module';
+import { UserCouponsModule } from './modules/userCoupons/userCoupons.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -16,6 +18,7 @@ import { BranchesModule } from './modules/branches/branches.module';
       isGlobal: true,
       validationSchema: configuration,
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     ProfilesModule,
     UsersModule,
@@ -24,6 +27,7 @@ import { BranchesModule } from './modules/branches/branches.module';
     MinioClientModule,
     CouponsModule,
     BranchesModule,
+    UserCouponsModule,
   ],
 })
 export class AppModule {}

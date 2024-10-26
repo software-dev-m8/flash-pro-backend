@@ -45,11 +45,11 @@ export class MinioClientService {
         this.logger.log(`Bucket "${this.bucketName}" already exists.`)
       }
     } catch (error) {
-      this.logger.error(`Error checking/creating bucket: ${error.message}`)
-      throw new HttpException(
-        'Minio bucket check/create failed',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      // this.logger.error(`Error checking/creating bucket: ${error.message}`)
+      // throw new HttpException(
+      //   'Minio bucket check/create failed',
+      //   HttpStatus.INTERNAL_SERVER_ERROR
+      // )
     }
   }
 
