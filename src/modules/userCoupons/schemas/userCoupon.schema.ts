@@ -19,7 +19,7 @@ export class UserCoupon extends Document {
   usedAt: Date;
 
   @Prop({ nullable: true })
-  expiresAt: Date;
+  expiredAt: Date;
 
 }
 

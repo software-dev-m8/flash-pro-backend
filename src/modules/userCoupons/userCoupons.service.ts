@@ -98,7 +98,7 @@ export class UserCouponsService {
 
     else {
         const now = new Date();
-        const remainingTime = userCoupon.expiresAt.getTime() - now.getTime();
+        const remainingTime = userCoupon.expiredAt.getTime() - now.getTime();
         return Math.max(0, Math.floor(remainingTime / 1000));
     }
     
@@ -111,7 +111,7 @@ export class UserCouponsService {
       throw new HttpException('Coupon_NOT_FOUND', HttpStatus.NOT_FOUND)
     }
 
-    if (userCoupon.expiresAt && userCoupon.expiresAt < new Date()) {
+    if (userCoupon.expiredAt && userCoupon.expiredAt < new Date()) {
         throw new HttpException('Coupon_has_expired', HttpStatus.BAD_REQUEST)
     }
 
@@ -127,11 +127,11 @@ export class UserCouponsService {
 
     if(!userCoupon.isUsed) {
         const usedAt = new Date();
-        const expiresAt = new Date(usedAt.getTime() + 5 * 60 * 1000);
+        const expiredAt = new Date(usedAt.getTime() + 5 * 60 * 1000);
         await this.userCouponModel.findByIdAndUpdate(id,{
             isUsed: true,
             usedAt,
-            expiresAt,})
+            expiredAt,})
 
         try {
             // Generate QR code as a Data URL (base64 image)
