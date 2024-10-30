@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
 
 @Schema({ timestamps: true })
-export class Profile extends Document {
+export class CustomerProfile extends Document {
   @Prop({ required: true })
   firstName: string
 
@@ -10,10 +10,17 @@ export class Profile extends Document {
   lastName: string
 
   @Prop()
-  phoneNumber: string
+  phoneNumber?: string
 
   @Prop({ type: Date })
-  birthDate: Date
+  birthDate?: Date
+
+  @Prop()
+  image?: string
+
+  @Prop()
+  likeFoods: string[]
 }
 
-export const ProfileSchema = SchemaFactory.createForClass(Profile)
+export const CustomerProfileSchema =
+  SchemaFactory.createForClass(CustomerProfile)

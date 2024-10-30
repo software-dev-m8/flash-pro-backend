@@ -15,7 +15,7 @@ $ npm install
 ```bash
 $ cd docker/dev
 
-$ docker compose up -d
+$ docker compose --env-file .env -f docker/dev/docker-compose.yml up -d --wait
 ```
 
 ## Running the app

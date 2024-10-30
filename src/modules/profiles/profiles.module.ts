@@ -1,15 +1,29 @@
 import { Module } from '@nestjs/common'
-import { ProfilesController } from './profiles.controller'
 import { ProfilesService } from './profiles.service'
 import { MongooseModule } from '@nestjs/mongoose'
-import { Profile, ProfileSchema } from './schemas/profile.schema'
+import {
+  CustomerProfile,
+  CustomerProfileSchema,
+  RestaurantProfile,
+  RestaurantProfileSchema,
+} from './schemas'
+import { Branch, BranchSchema } from '../branches/schema'
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Profile.name, schema: ProfileSchema }]),
+    MongooseModule.forFeature([
+      {
+        name: CustomerProfile.name,
+        schema: CustomerProfileSchema,
+      },
+      {
+        name: RestaurantProfile.name,
+        schema: RestaurantProfileSchema,
+      },
+      { name: Branch.name, schema: BranchSchema },
+    ]),
   ],
-  controllers: [ProfilesController],
   providers: [ProfilesService],
-  exports: [ProfilesService]
+  exports: [ProfilesService],
 })
 export class ProfilesModule {}
