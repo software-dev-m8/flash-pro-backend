@@ -29,8 +29,8 @@ export class UserCouponsService {
     const localOffset = dateInBangkok.getTimezoneOffset();
     const bangkokTime = new Date(dateInBangkok.getTime() + (bangkokOffset + localOffset) * 60000);
     this.logger.log(date)
-    // if(bangkokTime > date) 
-    //     throw new HttpException('Out_Of_Date', HttpStatus.BAD_REQUEST)
+    if(bangkokTime > date) 
+        throw new HttpException('Out_Of_Date', HttpStatus.BAD_REQUEST)
 
     const userCouponList = await this.userCouponModel.find({ userId : createUserCouponDto.userId }).exec()
     let isCollect = false
